@@ -1,10 +1,9 @@
 .content {
     margin: 0;
-    margin-top: 50px;
     padding: 0;
-    overflow: scroll;
-    width: 100%;
+    padding-top: 50px;
     height: 100%;
+    overflow: scroll;
     background: #fcfcfc;
 }
 
@@ -15,7 +14,7 @@
 
 /* Motor Data Table */
 .motor-data-table {
-
+    height: 100%;
 }
 
 .motor-data-cell, .motor-data-header, .motor-data-blank, .motor-data-name {
