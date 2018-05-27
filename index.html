@@ -1,0 +1,39 @@
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" />
+    <title>Motors</title>
+    <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/add_model.css">
+    <link rel="stylesheet" type="text/css" href="css/loading.css">
+
+</head>
+<body ng-controller="ApplicationController">
+
+<div class="content" ng-cloak>
+
+</div>
+
+<div class="loading-popup" ng-show="data_loading > 0">
+    <h1>Loading...</h1>
+    <img src="img/celtx_717x717.png">
+</div>
+
+<script src="node_modules/moment/moment.js"></script>
+<script src="node_modules/chart.js/dist/Chart.min.js"></script>
+<script src="node_modules/jquery/dist/jquery.min.js"></script>
+<script src="node_modules/jquery-ui-dist/jquery-ui.min.js"></script>
+<script src="node_modules/angular/angular.min.js"></script>
+<script src="node_modules/ngstorage/ngStorage.min.js"></script>
+<script src="node_modules/angular-chart.js/dist/angular-chart.min.js"></script>
+<script src="node_modules/angular-animate/angular-animate.min.js"></script>
+<script src="node_modules/angular-route/angular-route.min.js"></script>
+<script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+<script src="node_modules/angular-ui-sortable/dist/sortable.min.js"></script>
+<script src="node_modules/angularfire/dist/angularfire.min.js"></script>
+<script src="js/model.js"></script>
+<script src="js/simulator.js"></script>
+<script src="controllers/app.js"></script>
+</body>
+</html>
