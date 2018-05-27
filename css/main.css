@@ -1,56 +1,57 @@
 .content {
     margin: 0;
+    margin-top: 50px;
     padding: 0;
-    overflow: hidden;
+    overflow: scroll;
     width: 100%;
     height: 100%;
     background: #fcfcfc;
 }
 
-.header-row {
+.inner-content {
+    width: 80%;
+    margin: auto;
+}
+
+/* Motor Data Table */
+.motor-data-table {
+
+}
+
+.motor-data-cell, .motor-data-header, .motor-data-blank, .motor-data-name {
+    text-align: center;
+    font-size: 1.1em;
+    color: #444;
+}
+
+.motor-data-value {
     margin: 0;
-    padding: 5px;
-    border-bottom: 1px solid #eee;
+    margin-top: 28px;
 }
 
-.header-row li {
-    padding: 0;
-    margin-right: 5px;
-    height: 34px;
+.motor-data-value a {
+    color: #444;
 }
 
-/* Model */
-.data-section {
-    padding: 0;
-    height: 100%;
-    overflow-y: scroll;
-}
-
-.model-section-holder {
-    height: calc(100% - 44px);
-    overflow-y: scroll;
-    background: #fff;
-}
-
-.model-section {
-    margin: 5px;
-    background: #fcfcfc;
-    border: 1px solid #eee;
-    width: calc(100% - 10px);
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.model-section-header {
-    width: 100%;
-    margin: 0;
-    padding: 5px;
-}
-
-.model-section-header-icons {
+.motor-data-img{
+    height: 80px;
     float: right;
-    font-size: 16px;
-    cursor: pointer;
+
+}
+
+.motor-data-header {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #111;
+}
+
+.motor-data-blank {
+    
+}
+
+/* Motor Header */
+.motor-header {
+    margin-top: 50px;
 }
 
 

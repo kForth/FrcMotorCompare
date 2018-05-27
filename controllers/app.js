@@ -3,14 +3,20 @@ var app = angular.module('app', ['ngAnimate', 'ui.bootstrap', 'ngStorage', 'char
 app.config(function ($routeProvider, $locationProvider) {
     $locationProvider.html5Mode(false).hashPrefix('');
     $routeProvider
-        .when("/:motor", {
-            templateUrl: 'motor.html'
-        });
-        .when("/:compare", {
-            templateUrl: 'compare.html'
-        });
+        .when("/m/:motor", {
+            templateUrl: 'motor.html',
+            controller: 'MotorController'
+        })
+        .when("/compare", {
+            templateUrl: 'compare.html',
+            controller: 'CompareController'
+        })
         .when("/", {
-            templateUrl: 'index.html'
+            templateUrl: 'home.html',
+            controller: 'HomeController'
+        })
+        .otherwise({
+            redirectTo: '/'
         });
 
     // $routeProvider.html5Mode(true);
@@ -42,32 +48,57 @@ function hslToRgb(h, s, l) {
     return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
 
-var MOTORS = [
-    {
-        name: "CIM",
-        motor_curve_url: "http://content.vexrobotics.com/motors/217-2000-cim/cim-motor-curve-data-20151104.csv",
-        peak_power_url: "http://content.vexrobotics.com/motors/217-2000-cim/cim-peak-power-data-20151104.csv"
-        // locked_rotor_url: "http://link.vex.com/motors/217-2000-cim/locked-rotor-data"
-    }
-];
-
 app.service('MotorDataService', function($http){
     var service = {};
 
-    service.getMotorPowerCurve = function(motor){
+    service.getMotorPowerCurve = function(key){
+        var motor = MOTORS[key];
         return $http.get(motor.motor_curve_url)
-            .success(function(response){
+            .then(function(response){
+                var data = {};
+                var lines = response.data.split("\n");
+                var headers = lines[0].split(",");
+                headers.forEach(function(header){
+                    data[header] = [];
+                });
+                lines.splice(1).forEach(function(line){
+                    line = line.split(",");
+                    for(var i = 0; i < line.length; i++){
+                        data[headers[i]].push(line[i]);
+                    }
+                });
+                console.log(data);
+                return data;
+            },
+            function(response){
                 console.log(response);
-            })
-            .fail(function(response){
-                console.log(response);
+                return {};
             })
     };
 
     return service;
 });
 
-app.controller('ApplicationController', function ($scope, $localStorage, $sessionStorage, $location) {
+app.controller('ApplicationController', function ($scope, MotorDataService) {
+    $scope.motors = MOTORS;
+    $scope.specs = SPECS;
+
+});
+
+app.controller('HomeController', function($scope){
+
+});
+
+app.controller('MotorController', function($scope, $location, MotorDataService){
+    var key = $location.path().split("/").slice(-1)[0];
+    $scope.motor = MOTORS[key];
+    MotorDataService.getMotorPowerCurve(key)
+        .then(function(data){
+            $scope.motor_curve_data = data;
+        });
+});
+
+app.controller('CompareController', function ($scope, $localStorage, $sessionStorage, $location) {
     $scope.model_types = MODEL_TYPES;
     $scope.motors = MOTORS;
 
@@ -102,151 +133,6 @@ app.controller('ApplicationController', function ($scope, $localStorage, $sessio
             $scope.visible_elements = $sessionStorage.visible_elements;
             $scope.scale_factors = $sessionStorage.scale_factors;
         });
-
-    function getMotors(motor_type, num_motors) {
-        var motors = angular.copy(motor_type);
-        motors.free_speed = motors.free_rpm * 2 * Math.PI / 60;  // convert RPM to rad/sec
-        motors.k_r = motors.max_voltage / motors.stall_current;
-        motors.k_v = motors.free_speed / (motors.max_voltage - motors.k_r * motors.free_current);
-        motors.k_t = num_motors * motors.stall_torque / motors.stall_current;
-        motors.num_motors = num_motors;
-        return motors;
-    }
-
-    $scope.shareModels = function () {
-        if ($scope.models.length < 1) return;
-        var key = FirebaseService.addModelSet($scope.models, $scope.visible_models, $scope.visible_elements);
-        if (key !== undefined) $location.path('/' + key);
-    };
-
-    $scope.addModel = function (model_type) {
-        $scope.model_input_errors = [];
-        $scope.temp_model = angular.copy(model_type.model);
-        $scope.temp_model_type = model_type;
-        $scope.temp_model_inputs = getModelInputs(model_type);
-        $scope.temp_model_index = undefined;
-    };
-
-    $scope.deleteModel = function (model) {
-        $scope.models.splice($scope.models.indexOf(model), 1);
-        delete $scope.models_expanded[model.id];
-        delete $scope.visible_models[model.id];
-        $scope.runSim();
-    };
-
-    $scope.editModel = function (model) {
-        $scope.model_input_errors = [];
-        $scope.temp_model_index = $scope.models.indexOf(model);
-        $scope.temp_model = angular.copy(model);
-        $scope.temp_model.motor_type = JSON.stringify($scope.temp_model.real_motor_type);
-        $scope.temp_model_type = model.model_type;
-        $scope.temp_model_inputs = getModelInputs(model.model_type);
-    };
-
-    $scope.duplicateModel = function (model) {
-        var copied_model = angular.copy(model);
-        copied_model.id = undefined;
-        $scope.editModel(copied_model);
-        $scope.temp_model_index = undefined;
-    };
-
-    $scope.submitModel = function () {
-        $scope.model_input_errors = [];
-        var model = angular.copy($scope.temp_model);
-        model.model_type = $scope.temp_model_type;
-
-        for (var key in model) { //Load default parameters in case the user erased them.
-            if (model[key] === undefined || model[key] === "" || model[key] === null) {
-                model[key] = $scope.temp_model_type.model[key];
-            }
-        }
-
-        if (model.name === undefined || model.name === null || model.name === "") {
-            $scope.model_input_errors.push('name');
-        }
-
-        if (model.motor_type === undefined || model.motor_type === null || model.motor_type === "") {
-            $scope.model_input_errors.push('motor_type');
-        }
-        else {
-            model.motor_type = JSON.parse(model.motor_type);
-            model.motors = getMotors(model.motor_type, model.num_motors);
-            model.real_motor_type = model.motor_type;
-            model.motor_type = model.motor_type.name;
-        }
-
-        if ($scope.model_input_errors.length === 0) {
-            model.inputs = getModelInputs(model.model_type);
-            if (model.id === undefined || model.id == null) {
-                model.id = next_model_id++;
-                $scope.models_expanded[model.id] = false;
-            }
-
-            if ($scope.visible_models[model.id] === undefined || $scope.visible_models[model.id] === null) {
-                $scope.visible_models[model.id] = ($scope.models.length < 5);
-            }
-
-            if ($scope.temp_model_index !== undefined) {
-                $scope.models[$scope.temp_model_index] = model;
-            }
-            else {
-                $scope.models.push(model);
-            }
-            $scope.cancelModel();
-        }
-        $scope.runSim();
-    };
-
-    $scope.cancelModel = function () {
-        $scope.temp_model = undefined;
-        $scope.temp_model_type = undefined;
-        $scope.temp_model_inputs = undefined;
-        $scope.temp_model_index = undefined;
-    };
-
-    $scope.runSim = function () {
-        simulator_data = {};
-        simulators = {};
-        $scope.series = [];
-        $scope.data = [];
-        $scope.models.forEach(function (model) {
-            var sim = new Simulator(model.motors,
-                model.gear_ratio,
-                model.motor_current_limit,
-                model.motor_peak_current_limit,
-                model.motor_voltage_limit,
-                model.effective_diameter,
-                model.effective_mass,
-                model.k_gearbox_efficiency,
-                model.incline_angle,
-                model.check_for_slip,
-                model.coeff_kinetic_friction,
-                model.coeff_static_friction,
-                model.k_resistance_s,
-                model.k_resistance_v,
-                model.battery_voltage,
-                model.resistance_com,
-                model.resistance_idv,
-                model.time_step,
-                model.simulation_time,
-                model.max_dist);
-            simulators[model.id] = sim;
-            var data = {};
-            $scope.elements_can_plot.forEach(function (elem) {
-                data[elem] = [];
-            });
-            sim.getDataPoints().forEach(function (pt) {
-                for (var k in data) {
-                    data[k].push({
-                        x: pt.time,
-                        y: pt[k]
-                    });
-                }
-            });
-            simulator_data[model.id] = data;
-        });
-        $scope.loadLines();
-    };
 
     $scope.loadLines = function () {
         $scope.data = [];

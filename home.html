@@ -1,0 +1,30 @@
+<div class="inner-content">
+	<b>All of this data is from <a href="http://motors.vex.com/">VEX</a>.</b>
+	<table class="table table-striped motor-data-table">
+		<thead>
+			<tr class="info">
+			    <th class="motor-data-blank">
+			    </th>
+			    <th class="motor-data-header" ng-repeat="spec in specs">
+			        {{ spec.title }}
+			    </th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="motor in motors">
+				<td class="motor-data-cell row">
+					<div class="col-xs-8 motor-data-value">
+						<a href="#/m/{{ motor.key }}">{{ motor.name }}</a>
+					</div>
+					<div class="col-xs-4">
+						<img class="motor-data-img" src="{{ motor.img }}">
+					</div>
+				</td>
+				<td class="motor-data-cell" ng-repeat="spec in specs"
+				style="border-left: 1px solid #eee;">
+					<div class="motor-data-value">{{ motor[spec.key] }}</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

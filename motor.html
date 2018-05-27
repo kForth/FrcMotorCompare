@@ -1,0 +1,21 @@
+<div class="inner-content">
+    <div class="motor-header row">
+        <div class="col-xs-6">
+            <h1>{{ motor.name }}</h1>
+        </div>
+        <div class="col-xs-6">
+            <table class="table table-striped table-bordered">
+                <tbody>
+                    <tr ng-repeat="spec in specs">
+                        <td style="font-weight: 600; background: #eee">
+                            {{ spec.title }}
+                        </td>
+                        <td style="text-align: center">
+                            {{ motor[spec.key] }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
