@@ -82,6 +82,7 @@ app.service('MotorDataService', function($http){
 app.controller('ApplicationController', function ($scope, MotorDataService) {
     $scope.motors = MOTORS;
     $scope.specs = SPECS;
+    $scope.chart_specs = CHART_SPECS;
 
 });
 
@@ -111,30 +112,35 @@ app.controller('MotorController', function($scope, $location, MotorDataService){
             });
         });
 
-    var line_colours = {};
-    for (var i = 0; i < CHART_SPECS.length; i++) {
-        var hue = (i / CHART_SPECS.length);
+    $scope.line_colours = {};
+    for (var i = 1; i < CHART_SPECS.length; i++) {
+        var hue = i / (CHART_SPECS.length-1);
         var saturation = 0.5;
         var luminance = 0.5;
         var rgb = hslToRgb(hue, saturation, luminance);
-        line_colours[CHART_SPECS[i].key] = "rgb(" + rgb.join(', ') + ")";
+        $scope.line_colours[CHART_SPECS[i].key] = "rgb(" + rgb.join(', ') + ")";
     }
 
     $scope.loadLines = function () {
-        $scope.series = [];
-        $scope.data = [];
-        $scope.labels = [];
-        $scope.datasetOverride = [];
+        $scope.motor_curve_series = [];
+        $scope.motor_curve_data = [];
+        $scope.motor_curve_labels = [];
+        $scope.motor_curve_datasetOverride = [];
         CHART_SPECS.forEach(function(spec, i){
-            if($scope.elements_to_show[spec.key] && i > 0){
-                $scope.series.push(spec.title);
-                $scope.labels.push(spec.title);
-                $scope.data.push(motor_curve_data[spec.key]);
-                $scope.datasetOverride.push({
+            if(i > 0){
+                $scope.motor_curve_series.push(spec.title);
+                $scope.motor_curve_labels.push(spec.title);
+                $scope.motor_curve_data.push(motor_curve_data[spec.key]);
+                $scope.motor_curve_datasetOverride.push({
                     yAxisID: spec.axis,
                     pointRadius: 0.01,
-                    fill: false
-                    // borderColor: line_colours[spec.key]
+                    fill: false,
+                    fillColor: $scope.line_colours[spec.key],
+                    borderColor: $scope.line_colours[spec.key],
+                    backgroundColor: $scope.line_colours[spec.key],
+                    pointHoverBackgroundColor: $scope.line_colours[spec.key],
+                    pointHoverBorderColor: $scope.line_colours[spec.key],
+                    pointHoverRadius: 5
                 });
             }
         });
@@ -144,14 +150,15 @@ app.controller('MotorController', function($scope, $location, MotorDataService){
         console.log(points, evt);
     };
 
-    $scope.elements_to_show = {};
-    CHART_SPECS.forEach(function(e){ $scope.elements_to_show[e.key] = true });
-    $scope.series = [];
-    $scope.data = [];
-    $scope.datasetOverride = {};
-    $scope.options = {
+    $scope.motor_curve_series = [];
+    $scope.motor_curve_data = [];
+    $scope.motor_curve_datasetOverride = {};
+    $scope.motor_curve_options = {
         responsive: true,
         maintainAspectRatio: false,
+        legend: {
+            display: true
+        },
         scales: {
             yAxes: [{
                 id: 'rpm',
@@ -179,8 +186,7 @@ app.controller('MotorController', function($scope, $location, MotorDataService){
                 type: 'linear',
                 display: true,
                 ticks: {
-                    min: 0,
-                    max: 350
+                    min: 0
                 }
             },
             {

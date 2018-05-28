@@ -77,12 +77,14 @@
 }
 
 .legend-holder {
-    height: calc(40% - 5px);
-    margin: 0;
-    padding: 0 0 0 5px;
+    margin: 5px 5px 0;
+    padding: 5px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background: #fff;
 }
 
-.legend {
+.leg/*end {
     width: calc(50% - 5px);
     height: calc(100% - 10px);
     padding: 0;
@@ -111,7 +113,7 @@
 
 .scale-factor-input {
     width: 50px;
-}
+}*/
 
 @media only screen and (max-width: 768px) {
     .content {
