@@ -13,12 +13,14 @@
 		<tbody>
 			<tr ng-repeat="motor in motors">
 				<td class="motor-data-cell row">
-					<div class="col-xs-8 motor-data-value">
-						<a href="#/m/{{ motor.key }}">{{ motor.name }}</a>
-					</div>
-					<div class="col-xs-4">
-						<img class="motor-data-img" src="{{ motor.img }}">
-					</div>
+					<a href="#/{{ motor.key }}">
+						<div class="col-xs-8 motor-data-value">
+							{{ motor.name }}
+						</div>
+						<div class="col-xs-4">
+							<img class="motor-data-img" src="{{ motor.img }}">
+						</div>
+					</a>
 				</td>
 				<td class="motor-data-cell" ng-repeat="spec in specs"
 				style="border-left: 1px solid #eee;">

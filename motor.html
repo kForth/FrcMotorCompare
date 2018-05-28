@@ -21,10 +21,19 @@
         </div>
     </div>
 
+    <h2 style="text-align: center">Motor Power Curve</h2>
     <div class="chart-holder">
         <canvas id="motor_curve_chart" class="chart chart-line" chart-data="motor_curve_data"
                 chart-labels="motor_curve_labels" chart-series="motor_curve_series" chart-options="motor_curve_options"
                 chart-dataset-override="motor_curve_datasetOverride" chart-click="motor_curve_onClick">
+        </canvas>
+    </div>
+
+    <h2 style="text-align: center">Peak Power Test</h2>
+    <div class="chart-holder">
+        <canvas id="peak_power_chart" class="chart chart-line" chart-data="peak_power_data"
+                chart-labels="peak_power_labels" chart-series="peak_power_series" chart-options="peak_power_options"
+                chart-dataset-override="peak_power_datasetOverride" chart-click="peak_power_onClick">
         </canvas>
     </div>
 </div>

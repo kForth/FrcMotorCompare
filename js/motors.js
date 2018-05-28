@@ -25,6 +25,27 @@ var SPECS = [
 	}
 ];
 
+var PEAK_POWER_SPECS = [
+	{
+		title: "Time",
+		csv_key: "Time",
+		key: "time",
+		axis: 'time'
+	},
+	{
+		title: "Power Output (W)",
+		csv_key: "Power Output (W)",
+		key: "[power]",
+		axis: 'current-power'
+	},
+	{
+		title: "Current (A)",
+		csv_key: "Current (A)",
+		key: "current",
+		axis: 'current-power'
+	}
+]
+
 var CHART_SPECS = [
 	{
 		title: "Speed (RPM)",
@@ -51,8 +72,10 @@ var CHART_SPECS = [
 		axis: 'current-power'
 	},
 	// {
-	// 	csv_key: "\"Power Dissipation (W)\"",
+	// 	title: "Power Dissipation (W)",
+	// 	csv_key: "Power Dissipation (W)",
 	// 	key: "power_disipation"
+	// 	axis: 'current-power'
 	// },
 	// {
 	// 	title: "Supplied Power (W)",
@@ -62,8 +85,7 @@ var CHART_SPECS = [
 	// },
 	{
 		title: "Torque (N*m)",
-		csv_key: "Torque (N�m)\
-",
+		csv_key: "Torque (N�m)",
 		key: "torque",
 		axis: 'torque'
 	}
