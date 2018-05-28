@@ -120,8 +120,9 @@ app.controller('MotorController', function($scope, $location, MotorDataService){
         $scope.locked_rotor_labels = [];
         $scope.locked_rotor_datasetOverride = [];
         LOCKED_ROTOR_SPECS.forEach(function(spec){
-            $scope.locked_rotor_series.push(spec.title + " / " + parseInt(parseInt(spec.title.slice(0, -1)) / 12 * $scope.motor.stall_current) + "A");
-            $scope.locked_rotor_labels.push(spec.title);
+            var title = spec.title + " / " + parseInt(parseInt(spec.title.slice(0, -1)) / 12 * $scope.motor.stall_current) + "A"
+            $scope.locked_rotor_series.push(title);
+            $scope.locked_rotor_labels.push(title);
             $scope.locked_rotor_data.push(locked_rotor_data[spec.key]);
             $scope.locked_rotor_datasetOverride.push({
                 yAxisID: spec.axis,
