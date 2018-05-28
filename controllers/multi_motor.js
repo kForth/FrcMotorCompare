@@ -162,7 +162,13 @@ app.controller('CompareController', function ($scope, $location, MotorDataServic
                 if(i > 0 && peak_power_data[motor.key] !== undefined && $scope.display[motor.key] && $scope.peak_power_display[spec.key]){
                     $scope.peak_power_series.push(motor.name + " " + spec.title);
                     $scope.peak_power_labels.push(motor.name + " " + spec.title);
-                    $scope.peak_power_data.push(angular.copy(peak_power_data[motor.key][spec.key]));
+                    var data = angular.copy(peak_power_data[motor.key][spec.key])
+                    data.map(function(e){
+                        if(spec.key == 'power' || spec.key == 'current'){
+                            e.y *= $scope.num_motors[motor.key];
+                        }
+                    });
+                    $scope.peak_power_data.push(data);
                     $scope.peak_power_datasetOverride.push({
                         yAxisID: spec.axis,
                         pointRadius: 0.01,
