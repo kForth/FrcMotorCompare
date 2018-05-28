@@ -1,0 +1,117 @@
+<div class="inner-content">
+    <div class="row">
+        <div class="col-xs-6" ng-repeat="index in [[0, 5], [5, 9]]">
+            <table class="table table-striped" style="font-size: 1em">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Gear Ratio</th>
+                        <th>Num Motors</th>
+                        <th>Voltage Limit</th>
+                        <th>Display</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="motor in motors.slice(index[0], index[1])">
+                        <td>{{ motor.name }}</td>
+                        <td>
+                            <input class="form-control" type="number" ng-model="gear_ratio[motor.key]" ng-change="loadLines()" style="width: 80px">
+                        </td>
+                        <td>
+                            <input class="form-control" type="number" ng-model="num_motors[motor.key]" min="0" ng-change="loadLines()">
+                        </td>
+                        <td>
+                            <input class="form-control" type="number" ng-model="voltage_limit[motor.key]" max="14" min="0" ng-change="loadLines()">
+                        </td>
+                        <td>
+                            <input class="" type="checkbox" ng-model="display[motor.key]" ng-change="loadLines()">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h2 style="text-align: center">Motor Power Curve</h2>
+    <table class="table table-condensed">
+        <tbody>
+            <tr>
+                <td ng-repeat="spec in motor_curve_specs.slice(1)" style="text-align: center" 
+                ng-click="motor_curve_display[spec.key] = !motor_curve_display[spec.key]; loadLines()">
+                    <b ng-style="{'color': motor_curve_colours[spec.key]}">▉</b>
+                    <span ng-style="{'text-decoration': (motor_curve_display[spec.key] ? 'none' : 'line-through')}">{{ spec.title }}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="chart-holder">
+        <canvas id="motor_curve_chart" class="chart chart-line" chart-data="motor_curve_data"
+                chart-labels="motor_curve_labels" chart-series="motor_curve_series" chart-options="motor_curve_options"
+                chart-dataset-override="motor_curve_datasetOverride" chart-click="motor_curve_onClick">
+        </canvas>
+    </div>
+
+    <h2 style="text-align: center">Locked Rotor Test</h2>
+    <table class="table table-condensed">
+        <tbody>
+            <tr>
+                <td ng-repeat="spec in locked_rotor_specs" style="text-align: center" 
+                ng-click="locked_rotor_display[spec.key] = !locked_rotor_display[spec.key]; loadLines()">
+                    <b ng-style="{'color': locked_rotor_colours[spec.key]}">▉</b>
+                    <span ng-style="{'text-decoration': (locked_rotor_display[spec.key] ? 'none' : 'line-through')}">{{ spec.title }}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="chart-holder">
+        <canvas id="locked_rotor_chart" class="chart chart-line" chart-data="locked_rotor_data"
+                chart-labels="locked_rotor_labels" chart-series="locked_rotor_series" chart-options="locked_rotor_options"
+                chart-dataset-override="locked_rotor_datasetOverride" chart-click="locked_rotor_onClick">
+        </canvas>
+    </div>
+
+    <h2 style="text-align: center">Peak Power Test</h2>
+    <table class="table table-condensed">
+        <tbody>
+            <tr>
+                <td ng-repeat="spec in peak_power_specs.slice(1)" style="text-align: center" 
+                ng-click="peak_power_display[spec.key] = !peak_power_display[spec.key]; loadLines()">
+                    <b ng-style="{'color': peak_power_colours[spec.key]}">▉</b>
+                    <span ng-style="{'text-decoration': (peak_power_display[spec.key] ? 'none' : 'line-through')}">{{ spec.title }}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="chart-holder">
+        <canvas id="peak_power_chart" class="chart chart-line" chart-data="peak_power_data"
+                chart-labels="peak_power_labels" chart-series="peak_power_series" chart-options="peak_power_options"
+                chart-dataset-override="peak_power_datasetOverride" chart-click="peak_power_onClick">
+        </canvas>
+    </div>
+
+    <div class="row" style="margin: 10px -10px 0 -10px;">
+        <div class="col-xs-12">
+            <table class="table table-striped table-condensed">
+                <thead>
+                    <tr class="info">
+                        <th>
+                        </th>
+                        <th ng-repeat="spec in specs" style="text-align: center;">
+                            {{ spec.title }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="motor in motors">
+                        <td>
+                            <a href="#/{{ motor.key }}">{{ motor.name }}</a>
+                        </td>
+                        <td ng-repeat="spec in specs" style="text-align: center;">
+                            {{ motor[spec.key] }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

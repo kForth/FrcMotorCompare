@@ -1,16 +1,13 @@
 var app = angular.module('app');
 
 app.controller('MotorController', function($scope, $location, MotorDataService){
+    $scope.chart_specs = MOTOR_CURVE_SPECS;
     var key = $location.path().split("/").slice(-1)[0];
-    $scope.motor = MOTORS[key];
+    $scope.motor = angular.copy(MOTORS[key]);
 
     var motor_curve_data = {};      
     MotorDataService.getMotorPowerCurve(key)
         .then(function(data){
-            motor_curve_data = {};
-            $scope.labels = [];
-            $scope.series = [];
-            $scope.data = [];
             MOTOR_CURVE_SPECS.forEach(function(spec){
                 var vals = data[spec.csv_key];      
                 if(vals === undefined){
@@ -29,13 +26,19 @@ app.controller('MotorController', function($scope, $location, MotorDataService){
         });
 
     $scope.line_colours = {};
-    for (var i = 1; i < MOTOR_CURVE_SPECS.length; i++) {
-        var hue = i / (MOTOR_CURVE_SPECS.length-1);
-        var saturation = 0.5;
-        var luminance = 0.5;
-        var rgb = hslToRgb(hue, saturation, luminance);
-        $scope.line_colours[MOTOR_CURVE_SPECS[i].key] = "rgb(" + rgb.join(', ') + ")";
-    }
+    genColors(MOTOR_CURVE_SPECS.length-1).forEach(function(c, i){
+        $scope.line_colours[MOTOR_CURVE_SPECS[i+1].key] = c;
+    });
+
+    var peak_power_line_colours = {};
+    genColors(PEAK_POWER_SPECS.length-1).forEach(function(c, i){
+        peak_power_line_colours[PEAK_POWER_SPECS[i+1].key] = c;
+    });
+    
+    var locked_rotor_line_colours = {};
+    genColors(LOCKED_ROTOR_SPECS.length).forEach(function(c, i){
+        locked_rotor_line_colours[LOCKED_ROTOR_SPECS[i].key] = c;
+    });
 
     $scope.loadLines = function () {
         $scope.motor_curve_series = [];
@@ -61,15 +64,6 @@ app.controller('MotorController', function($scope, $location, MotorDataService){
             }
         });
     };
-
-    var peak_power_line_colours = {};
-    for (var i = 1; i < PEAK_POWER_SPECS.length; i++) {
-        var hue = i / (PEAK_POWER_SPECS.length-1);
-        var saturation = 0.5;
-        var luminance = 0.5;
-        var rgb = hslToRgb(hue, saturation, luminance);
-        peak_power_line_colours[PEAK_POWER_SPECS[i].key] = "rgb(" + rgb.join(', ') + ")";
-    }
 
     MotorDataService.getMotorPeakPower(key)
         .then(function(data){
@@ -106,19 +100,10 @@ app.controller('MotorController', function($scope, $location, MotorDataService){
 
     var locked_rotor_data = {};      
     MotorDataService.getMotorLockedRotor(key)
-        .then(function(resp){
-            locked_rotor_data = resp.data;
+        .then(function(data){
+            locked_rotor_data = data;
             $scope.loadLockedRotorLines();
         });
-
-    var locked_rotor_line_colours = {};
-    for (var i = 0; i < LOCKED_ROTOR_SPECS.length; i++) {
-        var hue = i / (LOCKED_ROTOR_SPECS.length);
-        var saturation = 0.5;
-        var luminance = 0.5;
-        var rgb = hslToRgb(hue, saturation, luminance);
-        locked_rotor_line_colours[LOCKED_ROTOR_SPECS[i].key] = "rgb(" + rgb.join(', ') + ")";
-    }
 
     $scope.loadLockedRotorLines = function () {
         $scope.locked_rotor_series = [];

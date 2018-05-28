@@ -48,6 +48,18 @@ function hslToRgb(h, s, l) {
     return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
 
+function genColors(n){
+    var colors = [];
+    for (var i = 0; i < n; i++) {
+        var hue = i / (n);
+        var saturation = 0.5;
+        var luminance = 0.5;
+        var rgb = hslToRgb(hue, saturation, luminance);
+        colors.push("rgb(" + rgb.join(', ') + ")");
+    }
+    return colors;
+}
+
 app.service('MotorDataService', function($http){
     var service = {};
 
@@ -99,19 +111,19 @@ app.service('MotorDataService', function($http){
 
     service.getMotorLockedRotor = function(key){
         var motor = MOTORS[key];
-        return $http.get(motor.locked_rotor_url);
+        return $http.get(motor.locked_rotor_url)
+            .then(function(resp){
+                return resp.data;
+            });
     };
 
     return service;
 });
 
 app.controller('ApplicationController', function ($scope, MotorDataService) {
-    $scope.motors = MOTORS;
+    $scope.motors = Object.values(MOTORS);
     $scope.specs = MOTOR_SPECS;
-    $scope.chart_specs = MOTOR_CURVE_SPECS;
-
 });
 
 app.controller('HomeController', function($scope){
-
 });

@@ -35,7 +35,7 @@ var PEAK_POWER_SPECS = [
 	{
 		title: "Power Output (W)",
 		csv_key: "Power Output (W)",
-		key: "[power]",
+		key: "power",
 		axis: 'current-power'
 	},
 	{
