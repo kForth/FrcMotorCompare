@@ -2,7 +2,7 @@ from glob import glob
 import codecs
 import json
 
-motor = 'bag'
+motor = 'NeveRest'
 files = glob('motor_data/{}-locked-rotor-data-*.csv'.format(motor))
 data_dict = {}
 for file in files:

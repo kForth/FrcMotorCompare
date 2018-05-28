@@ -11,10 +11,10 @@ app.controller('MotorController', function($scope, $location, MotorDataService){
             $scope.labels = [];
             $scope.series = [];
             $scope.data = [];
-            CHART_SPECS.forEach(function(spec){
+            MOTOR_CURVE_SPECS.forEach(function(spec){
                 motor_curve_data[spec.key] = data[spec.csv_key].map(function(e, i){
                     return {
-                        x: data[CHART_SPECS[0].csv_key][i],
+                        x: data[MOTOR_CURVE_SPECS[0].csv_key][i],
                         y: e
                     }
                 });
@@ -23,12 +23,12 @@ app.controller('MotorController', function($scope, $location, MotorDataService){
         });
 
     $scope.line_colours = {};
-    for (var i = 1; i < CHART_SPECS.length; i++) {
-        var hue = i / (CHART_SPECS.length-1);
+    for (var i = 1; i < MOTOR_CURVE_SPECS.length; i++) {
+        var hue = i / (MOTOR_CURVE_SPECS.length-1);
         var saturation = 0.5;
         var luminance = 0.5;
         var rgb = hslToRgb(hue, saturation, luminance);
-        $scope.line_colours[CHART_SPECS[i].key] = "rgb(" + rgb.join(', ') + ")";
+        $scope.line_colours[MOTOR_CURVE_SPECS[i].key] = "rgb(" + rgb.join(', ') + ")";
     }
 
     $scope.loadLines = function () {
@@ -36,7 +36,7 @@ app.controller('MotorController', function($scope, $location, MotorDataService){
         $scope.motor_curve_data = [];
         $scope.motor_curve_labels = [];
         $scope.motor_curve_datasetOverride = [];
-        CHART_SPECS.forEach(function(spec, i){
+        MOTOR_CURVE_SPECS.forEach(function(spec, i){
             if(i > 0){
                 $scope.motor_curve_series.push(spec.title);
                 $scope.motor_curve_labels.push(spec.title);
@@ -120,7 +120,8 @@ app.controller('MotorController', function($scope, $location, MotorDataService){
         $scope.locked_rotor_labels = [];
         $scope.locked_rotor_datasetOverride = [];
         LOCKED_ROTOR_SPECS.forEach(function(spec){
-            var title = spec.title + " / " + parseInt(parseInt(spec.title.slice(0, -1)) / 12 * $scope.motor.stall_current) + "A"
+            var test_current = parseInt(parseInt(spec.title.slice(0, -1)) / 12 * $scope.motor.stall_current);
+            var title = spec.title + " / " + test_current + "A"
             $scope.locked_rotor_series.push(title);
             $scope.locked_rotor_labels.push(title);
             $scope.locked_rotor_data.push(locked_rotor_data[spec.key]);

@@ -107,8 +107,8 @@ app.service('MotorDataService', function($http){
 
 app.controller('ApplicationController', function ($scope, MotorDataService) {
     $scope.motors = MOTORS;
-    $scope.specs = SPECS;
-    $scope.chart_specs = CHART_SPECS;
+    $scope.specs = MOTOR_SPECS;
+    $scope.chart_specs = MOTOR_CURVE_SPECS;
 
 });
 
