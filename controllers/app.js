@@ -26,7 +26,7 @@ function hslToRgb(h, s, l) {
     var r, g, b;
 
     if (s === 0) {
-        r = g = b = l; // achromatic
+        r = g = b = l;
     }
     else {
         var hue2rgb = function hue2rgb(p, q, t) {
@@ -92,10 +92,143 @@ app.controller('HomeController', function($scope){
 app.controller('MotorController', function($scope, $location, MotorDataService){
     var key = $location.path().split("/").slice(-1)[0];
     $scope.motor = MOTORS[key];
+
+    var motor_curve_data = {};      
     MotorDataService.getMotorPowerCurve(key)
         .then(function(data){
-            $scope.motor_curve_data = data;
+            motor_curve_data = {};
+            $scope.labels = [];
+            $scope.series = [];
+            $scope.data = [];
+            CHART_SPECS.forEach(function(spec){
+                motor_curve_data[spec.key] = data[spec.csv_key].map(function(e, i){
+                    return {
+                        x: data[CHART_SPECS[0].csv_key][i],
+                        y: e
+                    }
+                });
+                $scope.loadLines();
+            });
         });
+
+    var line_colours = {};
+    for (var i = 0; i < CHART_SPECS.length; i++) {
+        var hue = (i / CHART_SPECS.length);
+        var saturation = 0.5;
+        var luminance = 0.5;
+        var rgb = hslToRgb(hue, saturation, luminance);
+        line_colours[CHART_SPECS[i].key] = "rgb(" + rgb.join(', ') + ")";
+    }
+
+    $scope.loadLines = function () {
+        $scope.series = [];
+        $scope.data = [];
+        $scope.labels = [];
+        $scope.datasetOverride = [];
+        CHART_SPECS.forEach(function(spec, i){
+            if($scope.elements_to_show[spec.key] && i > 0){
+                $scope.series.push(spec.title);
+                $scope.labels.push(spec.title);
+                $scope.data.push(motor_curve_data[spec.key]);
+                $scope.datasetOverride.push({
+                    yAxisID: spec.axis,
+                    pointRadius: 0.01,
+                    fill: false
+                    // borderColor: line_colours[spec.key]
+                });
+            }
+        });
+    };
+
+    $scope.onClick = function (points, evt) {
+        console.log(points, evt);
+    };
+
+    $scope.elements_to_show = {};
+    CHART_SPECS.forEach(function(e){ $scope.elements_to_show[e.key] = true });
+    $scope.series = [];
+    $scope.data = [];
+    $scope.datasetOverride = {};
+    $scope.options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                id: 'rpm',
+                scaleLabel: {
+                    labelString: 'Speed (RPM)',
+                    display: true
+                },
+                position: 'left',
+                type: 'linear',
+                gridLines: {
+                    display: false,
+                },
+                display: false,
+                ticks: {
+                    min: 0
+                }
+            },
+            {
+                id: 'current-power',
+                scaleLabel: {
+                    labelString: 'Current (A) / Power (W)',
+                    display: true
+                },
+                position: 'left',
+                type: 'linear',
+                display: true,
+                ticks: {
+                    min: 0,
+                    max: 350
+                }
+            },
+            {
+                id: 'efficiency',
+                scaleLabel: {
+                    labelString: 'Efficiency (%)',
+                    display: true
+                },
+                position: 'left',
+                type: 'linear',
+                display: true,
+                gridLines: {
+                    display: false,
+                },
+                ticks: {
+                    min: 0,
+                    max: 100
+                }
+            },
+            {
+                id: 'torque',
+                position: 'right',
+                scaleLabel: {
+                    labelString: 'Torque (N*m)',
+                    display: true
+                },
+                type: 'linear',
+                gridLines: {
+                    display: false,
+                },
+                display: true,
+                ticks: {
+                    min: 0
+                }
+            }],
+            xAxes: [{
+                type: 'linear',
+                scaleLabel: {
+                    labelString: 'Speed (RPM)',
+                    display: true
+                },
+                ticks: {
+                    min: 0
+                }
+            }]
+        }
+    };
+
 });
 
 app.controller('CompareController', function ($scope, $localStorage, $sessionStorage, $location) {
@@ -154,7 +287,7 @@ app.controller('CompareController', function ($scope, $localStorage, $sessionSto
 
         $scope.models.forEach(function (model) {
             if ($scope.visible_models[model.id]) {
-                $scope.elements_can_plot.forEach(function (key) {
+                $scope.elements_can_plot.forEach(function (key, i) {
                     if ($scope.visible_elements[key]) {
                         var data = [];
                         simulator_data[model.id][key].forEach(function (pnt) {
