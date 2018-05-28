@@ -12,14 +12,20 @@ app.controller('MotorController', function($scope, $location, MotorDataService){
             $scope.series = [];
             $scope.data = [];
             MOTOR_CURVE_SPECS.forEach(function(spec){
-                motor_curve_data[spec.key] = data[spec.csv_key].map(function(e, i){
-                    return {
-                        x: data[MOTOR_CURVE_SPECS[0].csv_key][i],
-                        y: e
-                    }
-                });
-                $scope.loadLines();
+                var vals = data[spec.csv_key];      
+                if(vals === undefined){
+                    vals = data[spec.alt_key];
+                }
+                if(vals !== undefined){
+                        motor_curve_data[spec.key] = vals.map(function(e, i){
+                        return {
+                            x: data[MOTOR_CURVE_SPECS[0].csv_key][i],
+                            y: e
+                        }
+                    });
+                }   
             });
+            $scope.loadLines();
         });
 
     $scope.line_colours = {};

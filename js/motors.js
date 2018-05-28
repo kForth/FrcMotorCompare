@@ -125,6 +125,7 @@ var MOTOR_CURVE_SPECS = [
 	{
 		title: "Torque (N*m)",
 		csv_key: "Torque (N�m)",
+		alt_key: "Torque (N·m)",
 		key: "torque",
 		axis: 'torque'
 	}
