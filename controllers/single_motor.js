@@ -96,6 +96,47 @@ app.controller('MotorController', function($scope, $location, MotorDataService){
             })
         });
 
+
+
+    var locked_rotor_data = {};      
+    MotorDataService.getMotorLockedRotor(key)
+        .then(function(resp){
+            locked_rotor_data = resp.data;
+            $scope.loadLockedRotorLines();
+        });
+
+    var locked_rotor_line_colours = {};
+    for (var i = 0; i < LOCKED_ROTOR_SPECS.length; i++) {
+        var hue = i / (LOCKED_ROTOR_SPECS.length);
+        var saturation = 0.5;
+        var luminance = 0.5;
+        var rgb = hslToRgb(hue, saturation, luminance);
+        locked_rotor_line_colours[LOCKED_ROTOR_SPECS[i].key] = "rgb(" + rgb.join(', ') + ")";
+    }
+
+    $scope.loadLockedRotorLines = function () {
+        $scope.locked_rotor_series = [];
+        $scope.locked_rotor_data = [];
+        $scope.locked_rotor_labels = [];
+        $scope.locked_rotor_datasetOverride = [];
+        LOCKED_ROTOR_SPECS.forEach(function(spec){
+            $scope.locked_rotor_series.push(spec.title + " / " + parseInt(parseInt(spec.title.slice(0, -1)) / 12 * $scope.motor.stall_current) + "A");
+            $scope.locked_rotor_labels.push(spec.title);
+            $scope.locked_rotor_data.push(locked_rotor_data[spec.key]);
+            $scope.locked_rotor_datasetOverride.push({
+                yAxisID: spec.axis,
+                pointRadius: 0.01,
+                fill: false,
+                fillColor: locked_rotor_line_colours[spec.key],
+                borderColor: locked_rotor_line_colours[spec.key],
+                backgroundColor: locked_rotor_line_colours[spec.key],
+                pointHoverBackgroundColor: locked_rotor_line_colours[spec.key],
+                pointHoverBorderColor: locked_rotor_line_colours[spec.key],
+                pointHoverRadius: 5
+            });
+        });
+    };
+
     $scope.motor_curve_series = [];
     $scope.motor_curve_data = [];
     $scope.motor_curve_datasetOverride = {};
@@ -207,6 +248,39 @@ app.controller('MotorController', function($scope, $location, MotorDataService){
                 id: 'current-power',
                 scaleLabel: {
                     labelString: 'Power (W)',
+                    display: true
+                },
+                position: 'left',
+                type: 'linear',
+                display: true,
+                ticks: {
+                    min: 0
+                }
+            }],
+            xAxes: [{
+                type: 'linear',
+                scaleLabel: {
+                    labelString: 'Time (s)',
+                    display: true
+                },
+                ticks: {
+                    min: 0
+                }
+            }]
+        }
+    };
+
+    $scope.locked_rotor_options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+            display: true
+        },
+        scales: {
+            yAxes: [{
+                id: 'torque',
+                scaleLabel: {
+                    labelString: 'Torque (N*m)',
                     display: true
                 },
                 position: 'left',

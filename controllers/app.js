@@ -67,11 +67,9 @@ app.service('MotorDataService', function($http){
                         data[headers[i]].push(line[i]);
                     }
                 });
-                console.log(data);
                 return data;
             },
             function(response){
-                console.log(response);
                 return {};
             })
     };
@@ -92,13 +90,16 @@ app.service('MotorDataService', function($http){
                         data[headers[i]].push(line[i]);
                     }
                 });
-                console.log(data);
                 return data;
             },
             function(response){
-                console.log(response);
                 return {};
             })
+    };
+
+    service.getMotorLockedRotor = function(key){
+        var motor = MOTORS[key];
+        return $http.get(motor.locked_rotor_url);
     };
 
     return service;

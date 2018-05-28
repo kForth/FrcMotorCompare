@@ -44,7 +44,46 @@ var PEAK_POWER_SPECS = [
 		key: "current",
 		axis: 'current-power'
 	}
-]
+];
+
+var LOCKED_ROTOR_SPECS = [
+	{
+		title: "2v",
+		csv_key: "2v",
+		key: "2v",
+		axis: "torque"
+	},
+	{
+		title: "4v",
+		csv_key: "4v",
+		key: "4v",
+		axis: "torque"
+	},
+	{
+		title: "6v",
+		csv_key: "6v",
+		key: "6v",
+		axis: "torque"
+	},
+	{
+		title: "8v",
+		csv_key: "8v",
+		key: "8v",
+		axis: "torque"
+	},
+	{
+		title: "10v",
+		csv_key: "10v",
+		key: "10v",
+		axis: "torque"
+	},
+	{
+		title: "12v",
+		csv_key: "12v",
+		key: "12v",
+		axis: "torque"
+	}
+];
 
 var CHART_SPECS = [
 	{
@@ -98,12 +137,13 @@ var MOTORS = {
         stat_voltage: 12,
 	    free_rpm: 5330,
 	    stall_torque: 2.41,
-	    stall_current: 131,
+
 	    free_current: 2.7,
 	    max_power: 337,
 	    weight: 2.8,
         motor_curve_url: "motor_data/cim-motor-curve-data-20151104.csv",
         peak_power_url: "motor_data/cim-peak-power-data-20151104.csv",
+        locked_rotor_url: "motor_data/cim-locked-rotor-data.json",
         img: "http://content.vexrobotics.com/motors/Thumbnails/217-2000-motors.png"
     },
     "mini-cim": {
@@ -118,6 +158,7 @@ var MOTORS = {
 	    weight: 2.16,
         motor_curve_url: "motor_data/mini-cim-motor-curve-data-20151207.csv",
         peak_power_url: "motor_data/mini-cim-peak-power-data-20151207.csv",
+        locked_rotor_url: "motor_data/mini-cim-locked-rotor-data.json",
         img: "http://content.vexrobotics.com/motors/Thumbnails/217-3371-motors.png"
     },
     "bag": {
@@ -132,6 +173,7 @@ var MOTORS = {
 	    weight: 0.71,
         motor_curve_url: "motor_data/bag-motor-curve-data-20151207.csv",
         peak_power_url: "motor_data/bag-peak-power-data-20151207.csv",
+        locked_rotor_url: "motor_data/bag-locked-rotor-data.json",
         img: "http://content.vexrobotics.com/motors/Thumbnails/217-3351-motors.png"
     },
     "775pro": {
@@ -146,6 +188,7 @@ var MOTORS = {
 	    weight: 0.8,
         motor_curve_url: "motor_data/775pro-motor-curve-data-20151208.csv",
         peak_power_url: "motor_data/775pro-peak-power-data-20151210.csv",
+        locked_rotor_url: "motor_data/775pro-locked-rotor-data.json",
         img: "http://content.vexrobotics.com/motors/Thumbnails/217-4347-motors.png"
     },
     "am_9015": {
@@ -174,7 +217,7 @@ var MOTORS = {
 	    weight: 0.55,
         motor_curve_url: "motor_data/775pro-motor-curve-data-20151208.csv",
         peak_power_url: "motor_data/775pro-peak-power-data-20151210.csv",
-        img: "https://content.vexrobotics.com/motors/images/AM-NeveRest.png"
+        img: "http://content.vexrobotics.com/motors/images/AM-NeveRest.png"
     },
     "am_rs775_125": {
     	key: "am_rs775_125",
