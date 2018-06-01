@@ -144,7 +144,7 @@ var MOTORS = {
 	    weight: 2.8,
         motor_curve_url: "motor_data/cim-motor-curve-data-20151104.csv",
         peak_power_url: "motor_data/cim-peak-power-data-20151104.csv",
-        locked_rotor_url: "motor_data/bag-locked-rotor-data.json",
+        locked_rotor_url: "motor_data/cim-locked-rotor-data.json",
         vex_url: "http://motors.vex.com/vexpro-motors/cim-motor",
         img: "http://content.vexrobotics.com/motors/Thumbnails/217-2000-motors.png"
     },
