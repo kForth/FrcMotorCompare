@@ -99,15 +99,27 @@
                         <th ng-repeat="spec in specs" style="text-align: center;">
                             {{ spec.title }}
                         </th>
+                        <th>
+                            N*M/A
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="motor in motors">
+                    <tr ng-repeat="motor in motors" ng-show="display[motor.key]">
                         <td>
                             <a href="#/{{ motor.key }}">{{ motor.name }}</a>
                         </td>
                         <td ng-repeat="spec in specs" style="text-align: center;">
-                            {{ motor[spec.key] }}
+                            {{ 
+                                motor[spec.key] * 
+                                (spec.key == 'free_rpm' ? (1 / gear_ratio[motor.key]) : 1) * 
+                                (spec.key == 'stall_torque' ? gear_ratio[motor.key] : 1) * 
+                                (['stall_current', 'free_current', 'max_power', 'weight'].indexOf(spec.key) > -1 ? num_motors[motor.key] : 1) 
+                                | number:2
+                            }}
+                        </td>
+                        <td style="text-align: center;">
+                            {{ motor.stall_torque / motor.stall_current * gear_ratio[motor.key] * num_motors[motor.key] | number:4 }}
                         </td>
                     </tr>
                 </tbody>
