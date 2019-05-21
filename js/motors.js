@@ -132,6 +132,22 @@ var MOTOR_CURVE_SPECS = [
 ];
 
 var MOTORS = {
+    "neo": {
+    	key: "neo",
+        name: "REV NEO",
+        stat_voltage: 12,
+	    free_rpm: 5676,
+	    stall_torque: 2.6,
+	    stall_current: 105,
+	    free_current: 1.8,
+	    max_power: 406,
+	    weight: 0.938,
+        motor_curve_url: "motor_data/neo-curve-data.csv",
+        peak_power_url: "motor_data/neo-peak-data.csv",
+        locked_rotor_url: "motor_data/neo-locked-data.json",
+        vex_url: "http://www.revrobotics.com/rev-21-1650/",
+        img: "https://cdn11.bigcommerce.com/s-t3eo8vwp22/images/stencil/500x500/products/361/1213/NEO_HERO__39078.1542226252.png?c=2&imbypass=on"
+    },
     "cim": {
     	key: "cim",
         name: "CIM Motor",
